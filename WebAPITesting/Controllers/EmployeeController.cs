@@ -22,8 +22,7 @@ namespace WebAPITesting.Controllers
 
         [HttpGet]
         public Employee LoadEmployeebyId(int id) 
-        {
-            
+        {            
             return dbContext.Employees.FirstOrDefault(i=>i.ID == id);
         }
 
@@ -71,27 +70,27 @@ namespace WebAPITesting.Controllers
             
         }
 
-        //public HttpResponseMessage PATCH(int id,[FromBody] Employee employee)
-        //{
-        //    try
-        //    {
-        //        var entity = dbContext.Employees.FirstOrDefault(i => i.ID == id);
-        //        if (entity != null)
-        //        {
-        //            entity.FirstName = employee.FirstName;
-        //            entity.LastName = employee.LastName;
-        //            entity.Salary = employee.Salary;
-        //            entity.Gender = employee.Gender;
-        //            dbContext.SaveChanges();
-        //            return Request.CreateResponse(HttpStatusCode.OK, entity);
-        //        }
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The data is not available to update");
-        //    }
-        //    catch (Exception ex) 
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //    }
-        //}
+        public HttpResponseMessage PATCH(int id, [FromBody] Employee employee)
+        {
+            try
+            {
+                var entity = dbContext.Employees.FirstOrDefault(i => i.ID == id);
+                if (entity != null)
+                {
+                    entity.FirstName = employee.FirstName;
+                    entity.LastName = employee.LastName;
+                    entity.Salary = employee.Salary;
+                    entity.Gender = employee.Gender;
+                    dbContext.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, entity);
+                }
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The data is not available to update");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         public IEnumerable<string> Get()
         {
