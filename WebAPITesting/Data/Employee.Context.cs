@@ -26,5 +26,6 @@ namespace WebAPITesting.Data
         }
     
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<UserMaster> UserMasters { get; set; }
     }
 }

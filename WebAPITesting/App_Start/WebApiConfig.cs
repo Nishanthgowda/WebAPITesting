@@ -12,6 +12,12 @@ namespace WebAPITesting
     {
         public static void Register(HttpConfiguration config)
         {
+
+            // adding HTTP Message Handler
+            config.MessageHandlers.Add(new BasicAuthenticationMessageHanlder());
+
+
+
             // enabling Basic Authentication at global level
             //config.Filters.Add(new BasicAuthenticationFilter()); 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
 using System.Web.UI.WebControls.WebParts;
 using WebAPITesting.Models;
@@ -10,7 +11,7 @@ using WebAPITesting.Models;
 namespace WebAPITesting.Controllers
 {
     // Attribute Routing
-   [RoutePrefix("api/Students")]
+    [RoutePrefix("api/Students")]
     public class ValuesController : ApiController
     {
         static List<string> CourseList = new List<string>();
@@ -66,6 +67,28 @@ namespace WebAPITesting.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotModified, ex);
             }
+        }
+
+        // testing Http Message handler basic authentication
+
+     
+        [Authorize(Roles = "Admin,User")]
+        [Route("GetRoleAdmin")]
+        public HttpResponseMessage Get()
+        {
+            //You can implement youe own logic
+            //Get the Identity Name
+            string username = Thread.CurrentPrincipal.Identity.Name;
+
+            return Request.CreateResponse(HttpStatusCode.OK, "User Name = " + username);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("PostRoleAdmin")]
+        public HttpResponseMessage Post()
+        {
+            string username = Thread.CurrentPrincipal.Identity.Name;
+            return Request.CreateResponse(HttpStatusCode.OK, "User Name = " + username);
         }
 
     }

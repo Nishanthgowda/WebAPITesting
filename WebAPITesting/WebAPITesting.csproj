@@ -209,10 +209,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Employee.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\UserMaster.cs">
+      <DependentUpon>Employee.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BasicAuthenticationFilter.cs" />
+    <Compile Include="Models\BasicAuthenticationMessageHanlder.cs" />
     <Compile Include="Models\CustomAuthorization.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\User.cs" />
