@@ -35,8 +35,11 @@ namespace WebAPITesting.Models
                 var password = authCredentials[1];
                 if(UserValidate.Login(userName,password))
                 {
+                    var userDetails = UserValidate.GetUserDetails(userName, password);
                     var identity = new GenericIdentity(userName);
-                    var principle = new GenericPrincipal(identity, null);
+                    identity.AddClaim(new System.Security.Claims.Claim("Email", userDetails.Email));
+                    identity.AddClaim(new System.Security.Claims.Claim("ID",Convert.ToString(userDetails.ID)));
+                    var principle = new GenericPrincipal(identity, userDetails.Roles.Split(','));
                     Thread.CurrentPrincipal = principle;
 
                     if(HttpContext.Current != null)

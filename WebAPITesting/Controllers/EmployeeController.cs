@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Web.Http;
@@ -25,9 +26,15 @@ namespace WebAPITesting.Controllers
 
         [HttpGet]
         [BasicAuthenticationFilter]         //adding basic authentication at action level
+        [CustomAuthorization(Roles = "Admin")]
         public HttpResponseMessage LoadEmployeesOnGenders()
         {
-            string UserName = Thread.CurrentPrincipal.Identity.Name;
+            var identity =(ClaimsIdentity) User.Identity;
+            var email = identity.Claims.FirstOrDefault(i => i.Type == "Email").Value;
+            var id = identity.Claims.FirstOrDefault(i => i.Type == "ID").Value;
+
+            string UserName = identity.Name;
+            //string UserName = Thread.CurrentPrincipal.Identity.Name;
 
             switch (UserName.ToLower())
             {
@@ -36,6 +43,9 @@ namespace WebAPITesting.Controllers
                     break;
                 case "femaleusers":
                     return Request.CreateResponse(HttpStatusCode.OK, dbContext.Employees.Where(g => g.Gender == "Female"));
+                    break;
+                case "allusers":
+                        return Request.CreateResponse(HttpStatusCode.OK, dbContext.Employees);
                     break;
                 default: return Request.CreateResponse(HttpStatusCode.NoContent);
             }
