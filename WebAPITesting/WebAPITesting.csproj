@@ -212,7 +212,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BasicAuthenticationFilter.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserBL.cs" />
+    <Compile Include="Models\UserValidate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

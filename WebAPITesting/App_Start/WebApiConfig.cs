@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using WebApiContrib.Formatting.Jsonp;
+using WebAPITesting.Models;
 
 namespace WebAPITesting
 {
@@ -11,6 +12,9 @@ namespace WebAPITesting
     {
         public static void Register(HttpConfiguration config)
         {
+            // enabling Basic Authentication at global level
+            //config.Filters.Add(new BasicAuthenticationFilter()); 
+
             // Web API configuration and services
 
             // Web API routes

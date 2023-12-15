@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.UI.WebControls.WebParts;
 using WebAPITesting.Models;
 
 namespace WebAPITesting.Controllers
@@ -12,6 +13,8 @@ namespace WebAPITesting.Controllers
    [RoutePrefix("api/Students")]
     public class ValuesController : ApiController
     {
+        static List<string> CourseList = new List<string>();
+        static int count = 0;
         static List<Student> students = new List<Student>()
         {
             new Student() { Id = 1, Name = "Pranaya" },
@@ -26,16 +29,17 @@ namespace WebAPITesting.Controllers
             return students;
         }
 
-        [Route("{id}")]
+        //making as optional parameter using [Route("id=1")]
+        [Route("{id?}")]
         public Student Get(int id)
         {
             return students.FirstOrDefault(s => s.Id == id);
         }
 
-        [Route("{id}/Courses")]
+        //adding routing constraints
+        [Route("{id:int}/Courses",Name = "GetCourses")]
         public IEnumerable<string> GetStudentCourses(int id)
-        {
-            List<string> CourseList = new List<string>();
+        {            
             if (id == 1)
                 CourseList = new List<string>() { "ASP.NET", "C#.NET", "SQL Server" };
             else if (id == 2)
@@ -45,6 +49,23 @@ namespace WebAPITesting.Controllers
             else
                 CourseList = new List<string>() { "Bootstrap", "jQuery", "AngularJs" };
             return CourseList;
+        }
+
+        public HttpResponseMessage PostCourses(IEnumerable<string> courses)
+        {
+            try
+            {
+                count++;
+                CourseList.AddRange(courses);
+                var response = Request.CreateResponse(HttpStatusCode.OK, courses);
+                var res = Url.Link("GetCourses", new { CourseId = count});
+                response.Headers.Location = new Uri(res);
+                return response;
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotModified, ex);
+            }
         }
 
     }

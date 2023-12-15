@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Threading;
 using System.Web.Http;
-using System.Web.ModelBinding;
-using System.Web.UI.WebControls;
 using WebAPITesting.Data;
+using WebAPITesting.Models;
 
 namespace WebAPITesting.Controllers
 {
     public class EmployeeController : ApiController
     {
         WebApi_DbContext dbContext = new WebApi_DbContext();
+        
 
         [HttpGet]
         public IEnumerable<Employee> LoadAllEmployees()
@@ -21,6 +24,26 @@ namespace WebAPITesting.Controllers
         }
 
         [HttpGet]
+        [BasicAuthenticationFilter]         //adding basic authentication at action level
+        public HttpResponseMessage LoadEmployeesOnGenders()
+        {
+            string UserName = Thread.CurrentPrincipal.Identity.Name;
+
+            switch (UserName.ToLower())
+            {
+                case "maleusers":
+                    return Request.CreateResponse(HttpStatusCode.OK, dbContext.Employees.Where(g => g.Gender == "Male"));
+                    break;
+                case "femaleusers":
+                    return Request.CreateResponse(HttpStatusCode.OK, dbContext.Employees.Where(g => g.Gender == "Female"));
+                    break;
+                default: return Request.CreateResponse(HttpStatusCode.NoContent);
+            }
+        }
+
+
+        [HttpGet]
+        //[Route("LoadEmpbyId/{id}")]
         public Employee LoadEmployeebyId(int id) 
         {            
             return dbContext.Employees.FirstOrDefault(i=>i.ID == id);
@@ -32,7 +55,10 @@ namespace WebAPITesting.Controllers
             {
                 dbContext.Employees.Add(employee);
                 dbContext.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, employee);
+                var response =  Request.CreateResponse(HttpStatusCode.Created);
+                string uri = Url.Link("GetEmployeeById", new { EmployeeID = employee.ID });
+                response.Headers.Location = new Uri(uri);
+                return response;
             }
             catch (Exception ex) 
             {
